@@ -53,7 +53,7 @@ begin
                join   rdb$fields b on (a.rdb$field_source = b.rdb$field_name)   
       where a.rdb$field_name =  'LOCAL'  
    into :conta;   
-   insert into tests values ('checa se alguma tabela tem coluna LOCAL (FB4)',SN(case when :conta=0 then 1 else 0 end),'Tabelas com coluna LOCAL não rodam no FB4, preparar conversao para nova versao do FB');
+   insert into tests values ('checa se alguma tabela tem coluna LOCAL (FB4)',SN(case when :conta=0 then 1 else 0 end),'Tabelas com coluna "LOCAL" nao rodam no FB4, preparar conversao para nova versao do FB');
 
 
   -- checa se foi retirado o ID da sigcaut1
@@ -91,7 +91,12 @@ set term ;^
 COMMIT;
 
 
-set heading off;
-SELECT (case when sucesso='N' then '(Falha)' else '(  OK  )' end) sts  ,titulo || ' -> ' || texto FROM TESTS where sucesso='N';
+SET LIST ON;
+
+SELECT (case when sucesso='N' then '(Falha)' else '(  OK  )' end) ||
+      CASE WHEN sucesso='S' then trim(titulo) else  (trim(titulo) || ' -> ' || trim(texto)) end Resultado 
+FROM TESTS
+--where sucesso='N'
+;
 
 

@@ -173,8 +173,4 @@ end^
 
 set term ;^
 
-   -- limpa dados de testes   
-delete from tests;
-
 commit;
-
