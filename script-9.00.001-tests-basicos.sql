@@ -15,7 +15,7 @@ begin
    hoje = cast('now' as TIMESTAMP); 
    
    
-   insert into tests values ('checa se table de eventos existe',SN(exists_table('eventos_item')),'N�o criou a tabela de eventos');
+   insert into tests values ('checa se table de eventos existe',SN(exists_table('eventos_item')),'Não criou a tabela de eventos');
 
 
    -- teste eventos
@@ -23,11 +23,11 @@ begin
    delete from eventos_item where tabela='SIG02' AND DATA >= 'TODAY' and dcto between '990' and '999';
      insert into sig02 (dcto,prtserie,ordem,banco,data,filial,codigo,valor) values ('999','TESTE',1,'00',:hoje,1,'010',.01);
      if (not exists (select * from EVENTOS_ITEM where data >='TODAY' and dcto='999') ) then
-       insert into tests values('teste evento 010',  'N', 'n�o gerou o evento - checar se existe a trigger');
+       insert into tests values('teste evento 010',  'N', 'nao gerou o evento - checar se existe a trigger');
    
      insert into sig02 (dcto,prtserie,ordem,banco,data,filial,codigo,valor) values ('998','TESTE',1,'00',:hoje,1,'112',.01);
      if (not exists (select * from EVENTOS_ITEM where data >= 'TODAY' and dcto='998') ) then
-       INSERT into TESTS VALUES ('testa event 112','N','falhou evento SIG02 112, nao gerou evento de altera��o - checar se falta a trigger');
+       INSERT into TESTS VALUES ('testa event 112','N','falhou evento SIG02 112, nao gerou evento de alteracao - checar se falta a trigger');
    end
    insert into tests values('checa se criou SIG02 notificacoes',SN(exists_trigger('TR_SIG02_NOTIFICACOES')),'falta criar notificacoes');
 
@@ -53,13 +53,13 @@ begin
                join   rdb$fields b on (a.rdb$field_source = b.rdb$field_name)   
       where a.rdb$field_name =  'LOCAL'  
    into :conta;   
-   insert into tests values ('checa se alguma tabela tem coluna LOCAL (FB4)',SN(case when :conta=0 then 1 else 0 end),'Tabelas com coluna LOCAL n�o rodam no FB4, preparar conversao para nova versao do FB');
+   insert into tests values ('checa se alguma tabela tem coluna LOCAL (FB4)',SN(case when :conta=0 then 1 else 0 end),'Tabelas com coluna LOCAL não rodam no FB4, preparar conversao para nova versao do FB');
 
 
   -- checa se foi retirado o ID da sigcaut1
    
    if ((SELECT COUNT(*)  FROM get_primary_key('SIGCAUT1') WHERE FIELD_NAME = 'ID')>0) then
-     insert into tests values('checa primary key sigcaut1','N','n�o removeu o ID da chave primaria SIGCAU1 - ID N�O PODE SER USADO PARA EXLUIR INSERIR E EXCLUIR ITEM EM SEGUIDA');      
+     insert into tests values('checa primary key sigcaut1','N','nao removeu o ID da chave primaria SIGCAU1 - ID NAO PODE SER USADO PARA EXLUIR INSERIR E EXCLUIR ITEM EM SEGUIDA');      
 
    -- checa se foi criado a view 
    insert into tests values('testa se existe view WEB_CLIENTES',SN(exists_view( 'WEB_CLIENTES')),'Falta criar a view');
@@ -75,13 +75,13 @@ begin
  
    insert into tests values('chace se carregou funcioes padroes',SN(exists_function('sright')),'Nao foi carregar a lista de funcoes nativas do firebird');
  
-   insert into tests values('checa se existe indices FK_agenda_gid',SN(exists_indice('fk_pet_agenda_gid')),'N�o foi criado o FK_AGENDA_GID para a tabela AGENDA');
+   insert into tests values('checa se existe indices FK_agenda_gid',SN(exists_indice('fk_pet_agenda_gid')),'Nao foi criado o FK_AGENDA_GID para a tabela AGENDA');
  
-   insert into tests values('checa se criou columna nome_upper na sigcad',SN(exists_column('sigcad','nome_upper')), 'n�o criou columna requerida para otimiza��o de busca');
+   insert into tests values('checa se criou columna nome_upper na sigcad',SN(exists_column('sigcad','nome_upper')), 'nao criou columna requerida para otimizacao de busca');
  
-   insert into tests values('checa se tem  ctgrupo',SN(exists_table('ctgrupo')),'N�o encontrei a ctgrupo');
+   insert into tests values('checa se tem  ctgrupo',SN(exists_table('ctgrupo')),'Nao encontrei a ctgrupo');
 
-   insert into tests values('checa se tem primary key na ctgrupo',SN(exists_primary_key('ctgrupo')),'N�o encontrei primary key na ctgrupo');
+   insert into tests values('checa se tem primary key na ctgrupo',SN(exists_primary_key('ctgrupo')),'Nao encontrei primary key na ctgrupo');
    insert into tests values('checar procedure de atualização de cliente',SN(exists_procedure('WEB_ATUALIZAR_CLIENTE_BYCELULAR')),'Não achei a procedure WEB_ATUALIZAR_CLIENTE_BYCELULAR'); 
    insert into tests values('checar procedure usada no checkou',SN(exists_procedure('WEB_ATUALIZAR_VISUALIZADO')),'Não achei a procedure WEB_ATUALIZAR_VISUALIZADO'); 
  
@@ -90,12 +90,8 @@ set term ;^
 
 COMMIT;
 
--- mostra os que falharam
-SELECT * FROM TESTS where sucesso='N';
 
--- mostra todos
---SELECT * FROM TESTS ;
+set heading off;
+SELECT (case when sucesso='N' then 'Falha' else 'OK  ' end) sts  ,titulo || ' -> ' || texto FROM TESTS where sucesso='N';
 
--- mostra os sucessos
---SELECT * FROM TESTS where sucesso='S';
 
