@@ -92,6 +92,6 @@ COMMIT;
 
 
 set heading off;
-SELECT (case when sucesso='N' then 'Falha' else 'OK  ' end) sts  ,titulo || ' -> ' || texto FROM TESTS where sucesso='N';
+SELECT (case when sucesso='N' then '(Falha)' else '(  OK  )' end) sts  ,titulo || ' -> ' || texto FROM TESTS where sucesso='N';
 
 
